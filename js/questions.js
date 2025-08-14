@@ -1,0 +1,41 @@
+const correctAnswers = {
+          q1: ["{nombre}", "{edad}"],
+          q2: ["{lenguaje_favorito}", "{resultado_operacion}"],
+          q3: ["upper", "len"],
+          q4: ["+", "*"],
+          q5: ["//"],
+          q6: ["%"],
+          q7: ["**"],
+          q10: ["and"],
+          q11: ["{area}"],
+          q12: ["**", "{volumen}"],
+          q13: ["pi", "{circunferencia}"],
+          q14: ["/", "{area_triangulo}"],
+          q16: ["+", "{temp_fahrenheit}"],
+          q18: ["%", "{resultado_par}"],
+          q20: ["or", "{resultado_or}"],
+          q21: ["**", "."],
+          q22: ["."],
+          q24: [","],
+          q25: ["/", "."],
+          q29: [":"],
+          q30: ["{nombre}", "{apellido}"],
+          q32: ["pi", "**", "."],
+          q35: ["sqrt", "**", "**", "."],
+          q37: ["/", "."],
+          q38: [":"],
+          q39: ["//", "%"],
+          q42: ["*", "pi", "."],
+          q43: ["*", "*", "**", "."],
+          q47: ["in", "+="],
+          q49: ["not"]
+        };
+        
+        const pointValues = {
+          q1: 1, q2: 1, q3: 1, q4: 1, q5: 2,
+          q6: 2, q7: 2, q10: 2, q11: 2, q12: 2,
+          q13: 2, q14: 2, q16: 2, q18: 2, q20: 2,
+          q21: 2, q22: 2, q24: 2, q25: 2, q29: 2,
+          q30: 2, q32: 2, q35: 2, q37: 1, q38: 1,
+          q39: 2, q42: 1, q43: 1, q47: 1, q49: 1
+        };

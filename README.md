@@ -1,2 +1,2 @@
-# ProgramacionR_Rstudiov1
-Aplicación para aprender a programar en R con Rstudio
+# Academia Bio-R Interactiva
+Aplicación para iniciar el conocimiento en el lenguaje R con enfoque en bioinformática
