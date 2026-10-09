@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Academia Bio-R</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --py-blue: #276DC3;
+            --py-yellow: #A5ADBB;
+        }
+        * { font-family: 'Inter', sans-serif; }
+
+        body { background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            background: #1e293b;
+            border-right: 1px solid rgba(55,118,171,0.2);
+            width: 260px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+        }
+
+        /* Cards */
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid rgba(55,118,171,0.2);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            border-color: rgba(55,118,171,0.5);
+            box-shadow: 0 4px 20px rgba(55,118,171,0.15);
+        }
+
+        /* Tabla */
+        .user-table th {
+            background: rgba(55,118,171,0.1);
+            color: #94a3b8;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .user-table tr:hover td { background: rgba(55,118,171,0.05); }
+        .user-table td { border-bottom: 1px solid rgba(71,85,105,0.3); }
+
+        /* Inputs */
+        .form-input {
+            background: rgba(15,23,42,0.8);
+            border: 1.5px solid rgba(71,85,105,0.5);
+            color: #f1f5f9;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--py-blue);
+            box-shadow: 0 0 0 3px rgba(55,118,171,0.2);
+        }
+        .form-input::placeholder { color: #475569; }
+
+        /* Botones */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--py-blue), #2563eb);
+            transition: opacity 0.2s, transform 0.15s;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-danger  { background: rgba(239,68,68,0.15);  color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+        .btn-danger:hover  { background: rgba(239,68,68,0.25); }
+        .btn-warning { background: rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); }
+        .btn-warning:hover { background: rgba(245,158,11,0.25); }
+        .btn-success { background: rgba(34,197,94,0.15);  color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+        .btn-success:hover  { background: rgba(34,197,94,0.25); }
+        .btn-info    { background: rgba(55,118,171,0.15); color:#60a5fa; border:1px solid rgba(55,118,171,0.3); }
+        .btn-info:hover    { background: rgba(55,118,171,0.25); }
+
+        /* Badges */
+        .badge-admin    { background:rgba(239,68,68,0.15);  color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+        .badge-student  { background:rgba(55,118,171,0.15); color:#60a5fa; border:1px solid rgba(55,118,171,0.3); }
+        .badge-active   { background:rgba(34,197,94,0.15);  color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+        .badge-inactive { background:rgba(100,116,139,0.15);color:#94a3b8; border:1px solid rgba(100,116,139,0.3); }
+
+        /* Panel tab activo */
+        .tab-btn { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .tab-btn.active { border-bottom-color: var(--py-blue); color: #60a5fa; }
+
+        /* Modal */
+        .modal-overlay {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+        }
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid rgba(55,118,171,0.3);
+        }
+
+        /* Alerta toast */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            z-index: 9999;
+            transform: translateY(80px); opacity: 0;
+            transition: transform 0.35s, opacity 0.35s;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { background:#14532d; border:1px solid #16a34a; color:#4ade80; }
+        .toast-error   { background:#450a0a; border:1px solid #dc2626; color:#f87171; }
+        .toast-info    { background:#1e3a5f; border:1px solid #276DC3; color:#60a5fa; }
+
+        /* Nav activo en sidebar */
+        .nav-item { border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+        .nav-item:hover  { background: rgba(55,118,171,0.1); }
+        .nav-item.active { background: rgba(55,118,171,0.2); color: #60a5fa; }
+
+        select.form-input option { background: #1e293b; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; min-height: unset; }
+            .main-content { margin-left: 0 !important; }
+        }
+            /* Tailwind 2 no trae la paleta «slate»: se define aquí */
+        .text-slate-300 { color: #cbd5e1; } .text-slate-400 { color: #94a3b8; } .text-slate-500 { color: #64748b; } .text-slate-600 { color: #64748b; }
+        .bg-slate-800\/40 { background-color: rgba(30, 41, 59, .4); } .bg-slate-800\/60 { background-color: rgba(30, 41, 59, .6); }
+        .border-slate-600 { border-color: #475569; } .border-slate-700\/30 { border-color: rgba(51, 65, 85, .3); }
+        .border-slate-700\/40 { border-color: rgba(51, 65, 85, .4); } .border-slate-700\/50 { border-color: rgba(51, 65, 85, .5); }
+        .hover\:border-slate-500:hover { border-color: #64748b; }
+    </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast" class="toast rounded-xl px-5 py-3 flex items-center gap-3 shadow-2xl min-w-max">
+    <i id="toastIcon" class="fas fa-check-circle text-lg"></i>
+    <span id="toastMsg" class="text-sm font-medium"></span>
+</div>
+
+<!-- Modal Cambiar Contraseña -->
+<div id="modalPwd" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4">
+    <div class="modal-card rounded-2xl p-7 w-full max-w-sm">
+        <h3 class="text-lg font-bold text-white mb-1">Cambiar Contraseña</h3>
+        <p id="modalPwdUser" class="text-sm text-slate-400 mb-5"></p>
+        <div class="mb-4">
+            <label class="block text-xs font-medium text-slate-400 mb-1">Nueva Contraseña</label>
+            <input type="password" id="newPwdInput"
+                   class="form-input w-full px-4 py-2.5 rounded-lg text-sm"
+                   placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="mb-6">
+            <label class="block text-xs font-medium text-slate-400 mb-1">Confirmar Contraseña</label>
+            <input type="password" id="confirmPwdInput"
+                   class="form-input w-full px-4 py-2.5 rounded-lg text-sm"
+                   placeholder="Repite la contraseña">
+        </div>
+        <div class="flex gap-3">
+            <button onclick="closeModalPwd()"
+                    class="flex-1 py-2.5 rounded-lg text-slate-400 text-sm font-medium border border-slate-600 hover:border-slate-500 transition-colors">
+                Cancelar
+            </button>
+            <button onclick="saveNewPassword()"
+                    class="flex-1 btn-primary py-2.5 rounded-lg text-white text-sm font-semibold">
+                Guardar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Layout principal -->
+<div class="flex">
+
+    <!-- Sidebar -->
+    <aside class="sidebar flex flex-col p-6">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-3 mb-10">
+            <svg width="44" height="38" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                    <linearGradient id="anilloA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cbced0"/><stop offset="1" stop-color="#84838b"/></linearGradient>
+                    <linearGradient id="letraA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82e0"/><stop offset="1" stop-color="#1b4f94"/></linearGradient>
+                </defs>
+                <path fill-rule="evenodd" fill="url(#anilloA)" d="M60 8C28 8 4 25 4 46s24 38 56 38 56-17 56-38S92 8 60 8zm0 14c-24 0-42 10.7-42 24s18 24 42 24 42-10.7 42-24-18-24-42-24z"/>
+                <path fill="url(#letraA)" d="M44 30h30c11 0 18 6 18 15 0 6.5-3.6 11-9.5 13L96 92H79L68 60H59v32H44zm15 12v8h13c3 0 5-1.6 5-4s-2-4-5-4z"/>
+            </svg>
+            <div>
+                <h1 class="text-base font-bold text-white leading-tight">Bio-R</h1>
+                <p class="text-xs text-slate-400">Panel de Administración</p>
+            </div>
+        </div>
+
+        <!-- Info admin -->
+        <div class="bg-slate-800/60 rounded-xl p-4 mb-6 border border-slate-700/50">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm" id="adminAvatar">A</div>
+                <div>
+                    <p class="text-sm font-semibold text-white" id="adminName">Admin</p>
+                    <p class="text-xs text-slate-400" id="adminRole">Administrador</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <nav class="flex flex-col gap-1 flex-1">
+            <div class="nav-item active px-4 py-2.5 flex items-center gap-3 text-sm font-medium"
+                 onclick="showSection('usuarios')" id="nav-usuarios">
+                <i class="fas fa-users w-5 text-blue-400"></i>
+                <span>Gestionar Usuarios</span>
+            </div>
+            <div class="nav-item px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-slate-400"
+                 onclick="showSection('agregar')" id="nav-agregar">
+                <i class="fas fa-user-plus w-5 text-green-400"></i>
+                <span>Agregar Usuario</span>
+            </div>
+            <div class="nav-item px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-slate-400"
+                 onclick="showSection('estadisticas')" id="nav-estadisticas">
+                <i class="fas fa-chart-bar w-5 text-yellow-400"></i>
+                <span>Estadísticas</span>
+            </div>
+            <div class="nav-item px-4 py-2.5 flex items-center gap-3 text-sm font-medium text-slate-400"
+                 onclick="window.location.href='app.html'" id="nav-academia">
+                <i class="fas fa-graduation-cap w-5 text-purple-400"></i>
+                <span>Ir a la Academia</span>
+            </div>
+        </nav>
+
+        <!-- Cerrar sesión -->
+        <button onclick="AUTH.logout()"
+                class="mt-6 w-full py-2.5 rounded-xl border border-red-500/30 text-red-400 text-sm font-medium hover:bg-red-500/10 transition-colors flex items-center justify-center gap-2">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content flex-1 p-8" style="margin-left:260px; min-height:100vh;">
+
+        <!-- ===== SECCIÓN: GESTIONAR USUARIOS ===== -->
+        <section id="section-usuarios">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Gestión de Usuarios</h2>
+                    <p class="text-slate-400 text-sm mt-1">Administra los accesos a la academia</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="exportarUsuarios()"
+                            class="btn-info px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2">
+                        <i class="fas fa-file-export"></i> Exportar Usuarios
+                    </button>
+                    <button onclick="showSection('agregar')"
+                            class="btn-primary px-5 py-2.5 rounded-xl text-white text-sm font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Nuevo Usuario
+                    </button>
+                </div>
+            </div>
+
+            <!-- Búsqueda -->
+            <div class="relative mb-5 max-w-sm">
+                <input type="text" id="searchUsers" placeholder="Buscar por nombre, ID o C.C..."
+                       class="form-input w-full px-4 py-2.5 pl-10 rounded-xl text-sm"
+                       oninput="filterTable()">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            </div>
+
+            <!-- Tabla -->
+            <div class="bg-slate-800/40 rounded-2xl border border-slate-700/40 overflow-hidden">
+                <table class="user-table w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="px-5 py-3 text-left">Nombre</th>
+                            <th class="px-5 py-3 text-left">ID Usuario</th>
+                            <th class="px-5 py-3 text-left">C.C.</th>
+                            <th class="px-5 py-3 text-left">Rol</th>
+                            <th class="px-5 py-3 text-left">Estado</th>
+                            <th class="px-5 py-3 text-left">Creado</th>
+                            <th class="px-5 py-3 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Generado por JS -->
+                    </tbody>
+                </table>
+                <div id="emptyUsers" class="hidden text-center py-12 text-slate-500">
+                    <i class="fas fa-users text-4xl mb-3 block"></i>
+                    <p>No se encontraron usuarios</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN: AGREGAR USUARIO ===== -->
+        <section id="section-agregar" class="hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-white">Agregar Nuevo Usuario</h2>
+                <p class="text-slate-400 text-sm mt-1">Registra un nuevo estudiante o administrador</p>
+            </div>
+
+            <div class="max-w-2xl bg-slate-800/40 border border-slate-700/40 rounded-2xl p-8">
+                <form id="addUserForm" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <!-- Nombre completo -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-user mr-1"></i> Nombre Completo
+                            </label>
+                            <input type="text" id="addNombre"
+                                   class="form-input w-full px-4 py-3 rounded-xl text-sm"
+                                   placeholder="Ej: María García López">
+                        </div>
+
+                        <!-- ID Usuario -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-at mr-1"></i> ID de Usuario
+                            </label>
+                            <input type="text" id="addId"
+                                   class="form-input w-full px-4 py-3 rounded-xl text-sm"
+                                   placeholder="Ej: mgarcia01">
+                        </div>
+
+                        <!-- C.C. -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-id-card mr-1"></i> Cédula (C.C.)
+                            </label>
+                            <input type="text" id="addCC"
+                                   class="form-input w-full px-4 py-3 rounded-xl text-sm"
+                                   placeholder="Ej: 1234567890" maxlength="15">
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-key mr-1"></i> Contraseña
+                            </label>
+                            <input type="password" id="addPassword"
+                                   class="form-input w-full px-4 py-3 rounded-xl text-sm"
+                                   placeholder="Mínimo 6 caracteres">
+                        </div>
+
+                        <!-- Confirmar contraseña -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-lock mr-1"></i> Confirmar Contraseña
+                            </label>
+                            <input type="password" id="addPasswordConfirm"
+                                   class="form-input w-full px-4 py-3 rounded-xl text-sm"
+                                   placeholder="Repite la contraseña">
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                <i class="fas fa-shield-alt mr-1"></i> Rol
+                            </label>
+                            <select id="addRol" class="form-input w-full px-4 py-3 rounded-xl text-sm">
+                                <option value="estudiante">Estudiante</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Alerta form -->
+                    <div id="addAlert" class="hidden mb-4 px-4 py-3 rounded-lg text-sm flex items-center gap-2"></div>
+
+                    <div class="flex gap-4">
+                        <button type="button" onclick="showSection('usuarios')"
+                                class="px-6 py-2.5 rounded-xl border border-slate-600 text-slate-400 text-sm hover:border-slate-500 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                                class="btn-primary px-8 py-2.5 rounded-xl text-white text-sm font-semibold flex items-center gap-2">
+                            <i class="fas fa-user-plus"></i> Registrar Usuario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===== SECCIÓN: ESTADÍSTICAS ===== -->
+        <section id="section-estadisticas" class="hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-white">Estadísticas de Acceso</h2>
+                <p class="text-slate-400 text-sm mt-1">Resumen de usuarios registrados</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <i class="fas fa-users text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-white" id="statTotal">0</p>
+                            <p class="text-xs text-slate-400">Total Usuarios</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+                            <i class="fas fa-user-check text-green-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-white" id="statActivos">0</p>
+                            <p class="text-xs text-slate-400">Activos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
+                            <i class="fas fa-user-times text-red-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-white" id="statInactivos">0</p>
+                            <p class="text-xs text-slate-400">Inactivos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-yellow-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-white" id="statEstudiantes">0</p>
+                            <p class="text-xs text-slate-400">Estudiantes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista reciente -->
+            <div class="bg-slate-800/40 border border-slate-700/40 rounded-2xl p-6">
+                <h3 class="text-base font-semibold text-white mb-4">
+                    <i class="fas fa-clock text-blue-400 mr-2"></i> Usuarios Registrados Recientemente
+                </h3>
+                <div id="recentUsers" class="space-y-3"></div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+    // Proteger: solo admin puede ver este panel
+    const session = AUTH.requireAdmin();
+    if (session) {
+        document.getElementById('adminName').textContent = session.nombre;
+        document.getElementById('adminRole').textContent =
+            session.rol === 'admin' ? 'Administrador' : 'Estudiante';
+        document.getElementById('adminAvatar').textContent = session.nombre.charAt(0).toUpperCase();
+    }
+
+    // ========================
+    // Navegación entre secciones
+    // ========================
+    const sections = ['usuarios', 'agregar', 'estadisticas'];
+
+    function showSection(name) {
+        sections.forEach(s => {
+            document.getElementById('section-' + s).classList.add('hidden');
+            const nav = document.getElementById('nav-' + s);
+            if (nav) {
+                nav.classList.remove('active');
+                nav.classList.add('text-slate-400');
+            }
+        });
+        document.getElementById('section-' + name).classList.remove('hidden');
+        const nav = document.getElementById('nav-' + name);
+        if (nav) {
+            nav.classList.add('active');
+            nav.classList.remove('text-slate-400');
+        }
+        if (name === 'estadisticas') renderStats();
+        if (name === 'usuarios') renderTable();
+    }
+
+    // ========================
+    // Toast
+    // ========================
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon  = document.getElementById('toastIcon');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.className = 'toast rounded-xl px-5 py-3 flex items-center gap-3 shadow-2xl min-w-max';
+        if (type === 'success') {
+            toast.classList.add('toast-success');
+            icon.className = 'fas fa-check-circle text-green-400 text-lg';
+        } else if (type === 'error') {
+            toast.classList.add('toast-error');
+            icon.className = 'fas fa-times-circle text-red-400 text-lg';
+        } else {
+            toast.classList.add('toast-info');
+            icon.className = 'fas fa-info-circle text-blue-400 text-lg';
+        }
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ========================
+    // Render tabla de usuarios
+    // ========================
+    function formatDate(iso) {
+        if (!iso) return '—';
+        const d = new Date(iso);
+        return d.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function renderTable(filter = '') {
+        const users = AUTH.getUsers();
+        const tbody = document.getElementById('usersTableBody');
+        const empty = document.getElementById('emptyUsers');
+        const q = filter.toLowerCase();
+
+        const filtered = users.filter(u =>
+            u.nombre.toLowerCase().includes(q) ||
+            u.id.toLowerCase().includes(q) ||
+            u.cc.includes(q)
+        );
+
+        tbody.innerHTML = '';
+        if (filtered.length === 0) {
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+
+        filtered.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="px-5 py-3 text-white font-medium">${u.nombre}</td>
+                <td class="px-5 py-3 text-slate-300 font-mono text-xs">${u.id}</td>
+                <td class="px-5 py-3 text-slate-300 font-mono text-xs">${u.cc}</td>
+                <td class="px-5 py-3">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold ${u.rol === 'admin' ? 'badge-admin' : 'badge-student'}">
+                        ${u.rol === 'admin' ? 'Admin' : 'Estudiante'}
+                    </span>
+                </td>
+                <td class="px-5 py-3">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold ${u.activo ? 'badge-active' : 'badge-inactive'}">
+                        ${u.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                </td>
+                <td class="px-5 py-3 text-slate-400 text-xs">${formatDate(u.fechaCreacion)}</td>
+                <td class="px-5 py-3">
+                    <div class="flex items-center justify-center gap-2">
+                        <button onclick="openModalPwd('${u.id}')"
+                                class="btn-warning px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                            <i class="fas fa-key"></i> Clave
+                        </button>
+                        <button onclick="toggleUser('${u.id}')"
+                                class="${u.activo ? 'btn-info' : 'btn-success'} px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                            <i class="fas ${u.activo ? 'fa-ban' : 'fa-check'}"></i>
+                            ${u.activo ? 'Desactivar' : 'Activar'}
+                        </button>
+                        ${u.id !== 'admin' ? `
+                        <button onclick="deleteUser('${u.id}')"
+                                class="btn-danger px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>` : '<span class="text-xs text-slate-600 px-2">Protegido</span>'}
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterTable() {
+        renderTable(document.getElementById('searchUsers').value);
+    }
+
+    // ========================
+    // Acciones sobre usuarios
+    // ========================
+    function toggleUser(id) {
+        const result = AUTH.toggleUser(id);
+        if (result.success) {
+            showToast(result.activo ? 'Usuario activado correctamente.' : 'Usuario desactivado.', 'info');
+            renderTable(document.getElementById('searchUsers').value);
+        } else {
+            showToast(result.message, 'error');
+        }
+    }
+
+    function deleteUser(id) {
+        if (!confirm(`¿Eliminar el usuario "${id}"? Esta acción no se puede deshacer.`)) return;
+        const result = AUTH.deleteUser(id);
+        if (result.success) {
+            showToast('Usuario eliminado.', 'success');
+            renderTable(document.getElementById('searchUsers').value);
+        } else {
+            showToast(result.message, 'error');
+        }
+    }
+
+    // ========================
+    // Modal cambiar contraseña
+    // ========================
+    let modalTargetId = null;
+
+    function openModalPwd(id) {
+        modalTargetId = id;
+        const users = AUTH.getUsers();
+        const user  = users.find(u => u.id === id);
+        document.getElementById('modalPwdUser').textContent =
+            user ? `Usuario: ${user.nombre} (${user.id})` : id;
+        document.getElementById('newPwdInput').value = '';
+        document.getElementById('confirmPwdInput').value = '';
+        document.getElementById('modalPwd').classList.remove('hidden');
+        document.getElementById('modalPwd').classList.add('flex');
+    }
+
+    function closeModalPwd() {
+        document.getElementById('modalPwd').classList.add('hidden');
+        document.getElementById('modalPwd').classList.remove('flex');
+        modalTargetId = null;
+    }
+
+    function saveNewPassword() {
+        const np  = document.getElementById('newPwdInput').value;
+        const cnf = document.getElementById('confirmPwdInput').value;
+        if (np.length < 6) { showToast('La contraseña debe tener al menos 6 caracteres.', 'error'); return; }
+        if (np !== cnf)    { showToast('Las contraseñas no coinciden.', 'error'); return; }
+        const result = AUTH.changePassword(modalTargetId, np);
+        if (result.success) {
+            showToast('Contraseña actualizada correctamente.', 'success');
+            closeModalPwd();
+        } else {
+            showToast(result.message, 'error');
+        }
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('modalPwd').addEventListener('click', function(e) {
+        if (e.target === this) closeModalPwd();
+    });
+
+    // ========================
+    // Formulario agregar usuario
+    // ========================
+    function showAddAlert(msg, type) {
+        const el = document.getElementById('addAlert');
+        el.className = 'mb-4 px-4 py-3 rounded-lg text-sm flex items-center gap-2';
+        if (type === 'error') {
+            el.classList.add('bg-red-900/30', 'border', 'border-red-500/40', 'text-red-300');
+            el.innerHTML = `<i class="fas fa-exclamation-circle text-red-400"></i> ${msg}`;
+        } else {
+            el.classList.add('bg-green-900/30', 'border', 'border-green-500/40', 'text-green-300');
+            el.innerHTML = `<i class="fas fa-check-circle text-green-400"></i> ${msg}`;
+        }
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 4000);
+    }
+
+    document.getElementById('addUserForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre  = document.getElementById('addNombre').value.trim();
+        const id      = document.getElementById('addId').value.trim().toLowerCase();
+        const cc      = document.getElementById('addCC').value.trim();
+        const pwd     = document.getElementById('addPassword').value;
+        const pwdC    = document.getElementById('addPasswordConfirm').value;
+        const rol     = document.getElementById('addRol').value;
+
+        if (!nombre || !id || !cc || !pwd) {
+            showAddAlert('Por favor completa todos los campos.', 'error'); return;
+        }
+        if (!/^[a-z0-9_]{3,20}$/.test(id)) {
+            showAddAlert('El ID solo puede contener letras minúsculas, números y guiones bajos (3-20 caracteres).', 'error'); return;
+        }
+        if (!/^\d{6,15}$/.test(cc)) {
+            showAddAlert('La C.C. debe contener entre 6 y 15 dígitos numéricos.', 'error'); return;
+        }
+        if (pwd.length < 6) {
+            showAddAlert('La contraseña debe tener al menos 6 caracteres.', 'error'); return;
+        }
+        if (pwd !== pwdC) {
+            showAddAlert('Las contraseñas no coinciden.', 'error'); return;
+        }
+
+        const result = AUTH.addUser({ id, cc, nombre, password: pwd, rol });
+        if (result.success) {
+            showAddAlert(`Usuario "${nombre}" registrado. Enviando al formulario Google...`, 'success');
+            enviarAGoogleForms(nombre, cc);
+            this.reset();
+            setTimeout(() => showSection('usuarios'), 2000);
+        } else {
+            showAddAlert(result.message, 'error');
+        }
+    });
+
+    // ========================
+    // Estadísticas
+    // ========================
+    function renderStats() {
+        const users = AUTH.getUsers();
+        const activos     = users.filter(u => u.activo).length;
+        const inactivos   = users.filter(u => !u.activo).length;
+        const estudiantes = users.filter(u => u.rol === 'estudiante').length;
+        document.getElementById('statTotal').textContent       = users.length;
+        document.getElementById('statActivos').textContent     = activos;
+        document.getElementById('statInactivos').textContent   = inactivos;
+        document.getElementById('statEstudiantes').textContent = estudiantes;
+
+        // Recientes
+        const sorted = [...users].sort((a,b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)).slice(0,8);
+        const container = document.getElementById('recentUsers');
+        container.innerHTML = sorted.map(u => `
+            <div class="flex items-center justify-between py-2 border-b border-slate-700/30 last:border-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-600/50 flex items-center justify-center text-white text-xs font-bold">
+                        ${u.nombre.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-white">${u.nombre}</p>
+                        <p class="text-xs text-slate-500">${u.id} &bull; CC: ${u.cc}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2 py-1 rounded-full ${u.rol === 'admin' ? 'badge-admin' : 'badge-student'}">
+                        ${u.rol === 'admin' ? 'Admin' : 'Estudiante'}
+                    </span>
+                    <span class="text-xs text-slate-500">${formatDate(u.fechaCreacion)}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ========================
+    // Exportar usuarios a _PRESET_USERS
+    // ========================
+    function exportarUsuarios() {
+        const users = AUTH.getUsers().filter(u => u.id !== 'admin');
+        if (users.length === 0) {
+            showToast('No hay estudiantes para exportar.', 'error');
+            return;
+        }
+
+        const lines = users.map(u => {
+            // Decodificar la contraseña almacenada para mostrarla en texto plano
+            // (está codificada con encodeURIComponent, no hasheada)
+            const pwdPlain = decodeURIComponent(u.password);
+            return `    { id: '${u.id}', cc: '${u.cc}', nombre: '${u.nombre.replace(/'/g,"\\'")}', password: '${pwdPlain.replace(/'/g,"\\'")}', rol: '${u.rol}' }`;
+        });
+
+        const code = `const _PRESET_USERS = [\n${lines.join(',\n')}\n];`;
+
+        navigator.clipboard.writeText(code).then(() => {
+            showToast('Código copiado. Pégalo en auth.js reemplazando _PRESET_USERS.', 'success');
+        }).catch(() => {
+            // Fallback: mostrar en textarea
+            const ta = document.createElement('textarea');
+            ta.value = code;
+            ta.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:300px;z-index:9999;background:#0f172a;color:#f1f5f9;border:1px solid #276DC3;padding:16px;border-radius:12px;font-family:monospace;font-size:12px;';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            showToast('Código copiado al portapapeles.', 'success');
+            setTimeout(() => ta.remove(), 4000);
+        });
+    }
+
+    // ========================
+    // Integración Google Forms
+    // ========================
+    // Formulario de matrícula del curso de R. Vacío = no se envía nada (el de la Academia Bio-Python es de otro curso).
+    // Para activarlo, pegue aquí la dirección /formResponse de su formulario y ajuste los «entry.» de abajo.
+    const GOOGLE_FORM_URL = '';
+
+    function enviarAGoogleForms(nombre, cc) {
+        if (!GOOGLE_FORM_URL) return;
+        const body = new FormData();
+        body.append('entry.962796981',  nombre);   // Apellidos completos y nombres
+        body.append('entry.2143759247', cc);        // Cedula o TID
+
+        fetch(GOOGLE_FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',   // Google Forms no permite CORS; la respuesta es opaca pero el envío sí llega
+            body: body
+        })
+        .then(() => {
+            showToast('Datos enviados al formulario Google Forms.', 'success');
+        })
+        .catch(() => {
+            showToast('No se pudo conectar con Google Forms. Verifica tu conexión.', 'error');
+        });
+    }
+
+    // Inicializar
+    renderTable();
+</script>
+</body>
+</html>

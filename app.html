@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Bio-R · Aprende R jugando</title>
+    <meta name="description" content="Aprende R desde cero con lecciones, laboratorio de código R en el navegador, retos con verificación automática, XP y medallas.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <script>
+        // Tema antes de pintar (evita parpadeo)
+        try { document.documentElement.dataset.theme = localStorage.getItem('brTema') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); } catch (e) {}
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="css/academia.css">
+    <script src="js/auth.js"></script>
+    <script>
+        // Solo los estudiantes matriculados (con sesión iniciada) pueden ver la academia
+        if (!AUTH.getSession()) { window.location.replace('login.html'); }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/r/r.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+</head>
+
+<body>
+    <div id="cargando"><div style="text-align:center"><div class="serpiente"><i class="fab fa-r-project"></i></div><p style="margin-top:10px;font-weight:700;color:var(--texto-2)">Cargando tu academia…</p></div></div>
+
+    <div class="app">
+        <!-- ===== Barra lateral ===== -->
+        <aside class="lateral" id="lateral">
+            <a class="marca" href="#/inicio">
+                <div class="marca-logo"><i class="fab fa-r-project"></i></div>
+                <div><h1>Academia Bio-R</h1><p>Programación en R con RStudio</p></div>
+            </a>
+
+            <div class="jugador">
+                <div class="jugador-fila">
+                    <div class="avatar" id="jugAvatar">E</div>
+                    <div style="min-width:0;flex:1">
+                        <div class="jugador-nombre" id="jugNombre">Estudiante</div>
+                        <div class="jugador-nivel" id="jugNivel">Nivel 1</div>
+                    </div>
+                </div>
+                <div class="barra-xp"><i id="jugBarra"></i></div>
+                <div class="xp-texto"><span id="jugXP">0 XP</span><span id="jugSig"></span></div>
+                <div class="chips">
+                    <span class="chip" id="chipRacha" title="Días seguidos estudiando"><i class="fas fa-fire"></i><span id="jugRacha">0</span></span>
+                    <span class="chip" title="XP ganados hoy"><i class="fas fa-bolt"></i><span id="jugHoy">0</span></span>
+                    <span class="chip" title="Medallas"><i class="fas fa-medal"></i><span id="jugMedallas">0</span></span>
+                </div>
+            </div>
+
+            <nav class="nav-lista" aria-label="Secciones">
+                <button class="nav-item" data-ir="#/inicio"><i class="fas fa-house ico"></i><span class="nav-texto">Inicio · Mapa</span></button>
+                <button class="nav-item" data-ir="#/laboratorio"><i class="fas fa-flask ico"></i><span class="nav-texto">Laboratorio libre</span></button>
+                <button class="nav-item" data-ir="#/logros"><i class="fas fa-medal ico"></i><span class="nav-texto">Mis logros</span></button>
+                <button class="nav-item" data-ir="#/evaluaciones"><i class="fas fa-clipboard-check ico"></i><span class="nav-texto">Evaluaciones</span></button>
+                <button class="nav-item" data-ir="#/recursos"><i class="fas fa-toolbox ico"></i><span class="nav-texto">Recursos del curso</span></button>
+                <button class="nav-item" data-ir="#/recursos/datosPractica"><i class="fas fa-database ico" style="color:#0ea5e9"></i><span class="nav-texto">Datos de práctica</span></button>
+                <button class="nav-item" data-ir="#/videos"><i class="fab fa-youtube ico" style="color:#ef4444"></i><span class="nav-texto">Aprendo con videos</span></button>
+                <button class="nav-item" data-ir="#/recursos/manualUsuario"><i class="fas fa-book ico"></i><span class="nav-texto">Manual de usuario</span></button>
+            </nav>
+
+            <div class="nav-titulo">Módulos</div>
+            <nav id="navModulos" aria-label="Módulos del curso"></nav>
+
+            <div class="salir" id="zonaSalir">
+                <button class="btn-mini peligro" id="btnSalir"><i class="fas fa-right-from-bracket"></i>Salir</button>
+            </div>
+        </aside>
+
+        <!-- ===== Contenido ===== -->
+        <div class="principal">
+            <header class="superior">
+                <button class="icono-btn btn-menu" id="btnMenu" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
+                <div class="miga"><small id="migaPre">Academia Bio-R</small><h2 id="migaTitulo">Inicio</h2></div>
+                <button class="buscador" id="btnBuscar" aria-label="Buscar"><i class="fas fa-magnifying-glass"></i><span>Buscar temas, retos…</span><kbd>Ctrl K</kbd></button>
+                <span class="estado-python" id="estadoPython" title="Estado de R en el navegador (WebR)"><span class="punto"></span><span class="txt">Preparando R…</span></span>
+                <button class="icono-btn" id="btnNotas" title="Mis notas"><i class="fas fa-note-sticky"></i></button>
+                <button class="icono-btn" id="btnTema" title="Cambiar tema claro/oscuro"><i class="fas fa-sun"></i></button>
+                <button class="icono-btn" id="btnPantalla" title="Pantalla completa"><i class="fas fa-expand"></i></button>
+            </header>
+
+            <main class="contenido">
+                <section class="vista" id="vistaInicio"></section>
+                <section class="vista" id="vistaModulo"></section>
+                <section class="vista" id="vistaLaboratorio"></section>
+                <section class="vista" id="vistaLogros"></section>
+                <section class="vista" id="vistaEvaluaciones"></section>
+                <section class="vista" id="vistaRecursos"></section>
+                <section class="vista" id="vistaVideos"></section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== Ventanas ===== -->
+    <div class="capa" id="capaPaleta">
+        <div class="modal paleta">
+            <input id="paletaEntrada" placeholder="¿Qué quieres aprender? (vectores, ggplot, data frame…)" autocomplete="off">
+            <div class="paleta-lista" id="paletaLista"></div>
+        </div>
+    </div>
+
+    <div class="capa" id="capaNotas">
+        <div class="modal">
+            <div class="modal-cab"><i class="fas fa-note-sticky" style="color:var(--amarillo)"></i><h3 id="notasTitulo">Mis notas</h3>
+                <button class="icono-btn" onclick="document.getElementById('capaNotas').classList.remove('visible')" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+            <div class="modal-cuerpo">
+                <textarea class="notas-area" id="notasArea" placeholder="Escribe aquí lo que aprendiste, tus dudas o trucos…"></textarea>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+                    <button class="boton" id="btnDescargarNotas"><i class="fas fa-download"></i>Descargar todas</button>
+                    <button class="boton primario" id="btnGuardarNotas"><i class="fas fa-floppy-disk"></i>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="capa" id="capaModal">
+        <div class="modal">
+            <div class="modal-cab"><h3 id="modalGenericoTitulo"></h3>
+                <button class="icono-btn" onclick="UI.cerrarModal()" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div>
+            <div class="modal-cuerpo" id="modalGenericoCuerpo"></div>
+        </div>
+    </div>
+
+    <div class="capa" id="capaCelebracion" style="align-items:center;padding-top:16px">
+        <div class="modal" style="max-width:440px"><div class="celebracion" id="celebracionContenido"></div></div>
+    </div>
+
+    <div class="avisos" id="avisos" aria-live="polite"></div>
+
+    <script src="js/modules-data.js"></script>
+    <script src="js/modulos/unidad1.js"></script>
+    <script src="js/modulos/unidad2.js"></script>
+    <script src="js/modulos/unidad3.js"></script>
+    <script src="js/modulos/unidad4.js"></script>
+    <script src="js/modulos/unidad5.js"></script>
+    <script src="js/modulos/bonus.js"></script>
+    <script src="js/datos-practica.js"></script>
+    <script src="js/gamificacion.js"></script>
+    <script src="js/laboratorio.js"></script>
+    <script src="js/recursos.js"></script>
+    <script src="js/videos.js"></script>
+    <script src="js/registro-config.js"></script>
+    <script src="js/registro.js"></script>
+    <script src="js/app-core.js"></script>
+</body>
+</html>

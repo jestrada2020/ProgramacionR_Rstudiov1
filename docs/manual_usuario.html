@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual de usuario · Academia Bio-R</title>
+    <link rel="stylesheet" href="estilo_manual.css">
+</head>
+<body>
+
+<section class="portada">
+    <div class="franja">
+        <h1>Academia Bio-R</h1>
+        <p>Programación en R con RStudio · Aplicaciones en biología y estadística</p>
+    </div>
+    <div class="subtitulo">Manual de usuario</div>
+    <img src="img/inicio.png" alt="Pantalla de inicio de Academia Bio-R">
+    <div class="datos">Versión 2 · octubre de 2026</div>
+</section>
+
+<section class="indice">
+    <h2>Contenido</h2>
+    <ol>
+        <li><a href="#presentacion">1. Presentación</a></li>
+        <li><a href="#requisitos">2. Requisitos y cómo entrar</a></li>
+        <li><a href="#interfaz">3. La interfaz</a></li>
+        <li><a href="#inicio">4. El inicio y el mapa de la aventura</a></li>
+        <li><a href="#modulo">5. Un módulo paso a paso</a>
+            <ol>
+                <li><a href="#leccion">5.1 Lección</a></li>
+                <li><a href="#laboratorio">5.2 Laboratorio</a></li>
+                <li><a href="#retos">5.3 Retos</a></li>
+                <li><a href="#quiz">5.4 Quiz</a></li>
+                <li><a href="#rstudio">5.5 En RStudio</a></li>
+            </ol>
+        </li>
+        <li><a href="#puntos">6. Puntos, niveles, medallas y diploma</a></li>
+        <li><a href="#libre">7. Laboratorio libre y datos de práctica</a></li>
+        <li><a href="#videos">8. Aprendo con videos</a></li>
+        <li><a href="#evaluaciones">9. Evaluaciones y recursos del curso</a></li>
+        <li><a href="#buscador">10. Buscador y notas</a></li>
+        <li><a href="#errores">11. Guía rápida de errores de R</a></li>
+        <li><a href="#celular">12. La academia en el celular</a></li>
+        <li><a href="#problemas">13. Solución de problemas</a></li>
+        <li><a href="#profesor">14. Para el profesor</a></li>
+    </ol>
+</section>
+
+<h2 id="presentacion">1. Presentación</h2>
+<p><b>Academia Bio-R</b> es una plataforma para aprender el lenguaje <b>R</b> desde cero, con ejemplos de biología, salud y ecología. Tiene el mismo diseño de la <b>Academia Bio-Python</b>: el curso se recorre como una aventura de <b>16 módulos en 5 unidades</b>, y cada módulo es una misión de cuatro pasos (lección, laboratorio, retos y quiz) que dan puntos de experiencia (XP), niveles y medallas.</p>
+<table>
+    <tr><th>Unidad</th><th>Módulos</th></tr>
+    <tr><td>1. Primeros pasos</td><td>Introducción a R · Instalación de R y RStudio · Primeros pasos en R</td></tr>
+    <tr><td>2. Datos en R</td><td>Vectores y matrices · Listas, factores y data frames · Importar, limpiar y exportar datos</td></tr>
+    <tr><td>3. Programar y graficar</td><td>Programación en R · Paquetes y tidyverse · Gráficos en R</td></tr>
+    <tr><td>4. Estadística con R</td><td>Estadística descriptiva · Pruebas de hipótesis · Correlación y regresión</td></tr>
+    <tr><td>5. Ciencia reproducible</td><td>Bioinformática con R · R Markdown y Quarto · Aplicaciones con Shiny · R en la nube y con IA</td></tr>
+    <tr><td>Bonus (opcional)</td><td>Actividades Extras (10 videos sobre biología computacional, el futuro de la programación, pensamiento crítico e IA) · Proyecto final: análisis de un experimento · Desafíos de programación bio</td></tr>
+</table>
+<p>Lo más importante: el laboratorio ejecuta <b>R 4.5 real dentro del navegador</b> (tecnología WebR). No hay que instalar nada para practicar, y todo lo aprendido funciona igual en RStudio.</p>
+
+<h2 id="requisitos">2. Requisitos y cómo entrar</h2>
+<ul>
+    <li>Un navegador moderno (Chrome, Edge o Firefox) y conexión a internet. La primera vez se descarga R (unos 10 segundos).</li>
+    <li>Un usuario creado por el profesor: <b>solo los estudiantes matriculados pueden ingresar</b>.</li>
+</ul>
+<div class="lado">
+    <div>
+        <ol class="pasos">
+            <li>Abre la dirección de la academia. Aparece la pantalla <b>Iniciar sesión</b>.</li>
+            <li>Escribe tu <b>ID de usuario o tu número de cédula</b> y tu <b>contraseña</b> (el ojo permite verla).</li>
+            <li>Pulsa <b>Ingresar a la Academia</b>. Si los datos no corresponden a un estudiante matriculado, aparece «ID/C.C. o contraseña incorrectos».</li>
+            <li>Para terminar, pulsa <b>Salir</b> al final de la barra lateral.</li>
+        </ol>
+        <div class="nota"><p><b>Tu progreso es tuyo:</b> XP, medallas, código y notas se guardan por usuario en el navegador. Si cambias de computador o de navegador, empiezas de cero en ese equipo.</p></div>
+    </div>
+    <figure><img src="img/login.png" alt="Pantalla de inicio de sesión"><figcaption>Figura 1. Inicio de sesión: solo para estudiantes matriculados.</figcaption></figure>
+</div>
+
+<h2 id="interfaz">3. La interfaz</h2>
+<figure><img src="img/leccion.png" alt="Interfaz de la academia"><figcaption>Figura 2. Barra lateral (izquierda), barra superior y área de trabajo de un módulo.</figcaption></figure>
+<table>
+    <tr><th>Zona</th><th>Qué contiene</th></tr>
+    <tr><td>Tarjeta del jugador</td><td>Tu nombre, nivel, barra de XP, racha de días (🔥), XP de hoy (⚡) y medallas.</td></tr>
+    <tr><td>Secciones</td><td>Inicio · Mapa, Laboratorio libre, Mis logros, Evaluaciones, Recursos del curso, Datos de práctica, Aprendo con videos y Manual de usuario.</td></tr>
+    <tr><td>Módulos</td><td>Las 5 unidades (se despliegan con un clic) y el bonus. El círculo de cada módulo muestra su estado: gris (nuevo), amarillo (en curso) o verde con ✓ (completado).</td></tr>
+    <tr><td>Barra superior</td><td>Dónde estás, el <b>buscador</b> (Ctrl + K), el estado de R (punto verde = «R listo»), notas, tema claro/oscuro y pantalla completa.</td></tr>
+</table>
+
+<h2 id="inicio">4. El inicio y el mapa de la aventura</h2>
+<p>El inicio saluda por tu nombre y muestra tus estadísticas, la <b>siguiente misión</b> (el módulo que te toca), el <b>reto del día</b> (vale el doble de XP), la <b>meta diaria</b> de 60 XP, el acceso a «Aprendo con videos» y un dato curioso de R.</p>
+<p>Más abajo está el <b>mapa de la aventura</b>: una tarjeta por módulo con cuatro barritas que se ponen verdes al completar cada paso. El módulo marcado como <b>SIGUIENTE</b> es el recomendado.</p>
+<figure><img src="img/inicio.png" alt="Inicio y mapa"><figcaption>Figura 3. Inicio: siguiente misión, reto del día, meta diaria y mapa de la aventura.</figcaption></figure>
+
+<h2 id="modulo">5. Un módulo paso a paso</h2>
+<p>Cada módulo tiene cuatro pasos numerados y, en algunos, un paso extra <b>En RStudio</b>. Los botones con flechas de la cabecera llevan al módulo anterior o siguiente.</p>
+
+<h3 id="leccion">5.1 Lección (15 XP)</h3>
+<ul>
+    <li><b>Videos:</b> el principal y una lista de videos complementarios en español, verificados. Los del canal del profesor aparecen marcados «Canal del profe». Si un video no se ve, usa el enlace <b>YouTube</b>.</li>
+    <li><b>Texto:</b> explicación con índice, tablas y notas. Los bloques de código R tienen el botón <b>▶ Probar</b>, que los copia al laboratorio y los ejecuta. Los bloques con borde punteado y la etiqueta «Para RStudio» son para practicar fuera del navegador (instalar paquetes, Shiny, Bioconductor…).</li>
+    <li>Al final pulsa <b>¡Lo entendí!</b> para completar la lección.</li>
+</ul>
+
+<h3 id="laboratorio">5.2 Laboratorio (10 XP)</h3>
+<figure><img src="img/laboratorio.png" alt="Laboratorio"><figcaption>Figura 4. Laboratorio: editor de código R (izquierda) y consola con el gráfico (derecha).</figcaption></figure>
+<ul>
+    <li>Escribe código en el editor y pulsa <b>Ejecutar</b> o <kbd>Ctrl</kbd> + <kbd>Enter</kbd>. El código se guarda solo.</li>
+    <li>Atajos de RStudio que también funcionan: <kbd>Alt</kbd> + <kbd>-</kbd> escribe <code>&lt;-</code>; <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> escribe <code>%&gt;%</code>; <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> comenta líneas.</li>
+    <li><b>Entradas para readline():</b> escribe un dato por línea; si faltan, la academia los pregunta en una ventana.</li>
+    <li><b>Gráficos:</b> <code>plot()</code>, <code>hist()</code>, <code>boxplot()</code> y ggplot2 aparecen en la consola.</li>
+    <li><b>Paquetes:</b> escribe <code>library(ggplot2)</code>, <code>library(dplyr)</code>, etc.; se instalan solos la primera vez.</li>
+    <li><b>Archivos:</b> <b>Subir</b> trae archivos de tu PC (CSV, Excel, JSON, TXT); el botón de carpeta los lista, agrega el código para leerlos («Usar») y descarga los que cree tu programa (por ejemplo con <code>write.csv()</code>).</li>
+    <li>El botón de descarga guarda tu código como archivo <code>.R</code> para abrirlo en RStudio.</li>
+    <li>Si un programa tarda más de 12 segundos (por ejemplo un bucle infinito), se detiene y se avisa.</li>
+</ul>
+
+<h3 id="retos">5.3 Retos (25 XP cada uno)</h3>
+<figure><img src="img/retos.png" alt="Retos"><figcaption>Figura 5. Un reto abierto con su plantilla, los botones de verificación y las pistas.</figcaption></figure>
+<ol class="pasos">
+    <li>Pulsa el título del reto para abrirlo y lee el enunciado.</li>
+    <li>Completa la plantilla y prueba con <b>Ejecutar</b>.</li>
+    <li>Pulsa <b>Verificar</b>: la academia ejecuta tu programa y la solución con las mismas entradas y compara los resultados (números junto a su etiqueta y textos importantes). Puedes escribir los mensajes a tu manera.</li>
+    <li><b>Pista</b> da ideas sin revelar la solución. <b>Ver solución</b> pide confirmación y el reto pasa a valer 8 XP.</li>
+</ol>
+<p>Algunos retos se hacen <b>en RStudio</b> (instalar R, Bioconductor, Shiny, R Markdown, Colab): al verificarlos aparece el botón <b>Ya lo hice</b>.</p>
+
+<h3 id="quiz">5.4 Quiz (8 XP por acierto nuevo + 100 XP al completar)</h3>
+<figure><img src="img/quiz.png" alt="Quiz"><figcaption>Figura 6. Quiz: una pregunta a la vez con respuesta inmediata.</figcaption></figure>
+<p>Diez preguntas, una a la vez, con respuesta inmediata y combos por aciertos seguidos. Las preguntas y opciones cambian de orden en cada intento. Con <b>70 % o más</b> el módulo queda completado. Se guarda tu mejor resultado.</p>
+
+<h3 id="rstudio">5.5 En RStudio</h3>
+<p>En los módulos que lo tienen, este paso explica cómo hacer lo mismo en RStudio, Posit Cloud o Google Colab (instalación, proyectos, paquetes, informes, aplicaciones Shiny).</p>
+
+<h2 id="puntos">6. Puntos, niveles, medallas y diploma</h2>
+<div class="lado">
+    <div>
+        <table>
+            <tr><th>Acción</th><th>XP</th></tr>
+            <tr><td>Lección leída</td><td>15</td></tr>
+            <tr><td>Primer programa del módulo</td><td>10</td></tr>
+            <tr><td>Reto superado (con la solución)</td><td>25 (8)</td></tr>
+            <tr><td>Reto del día</td><td>doble</td></tr>
+            <tr><td>Respuesta correcta nueva</td><td>8</td></tr>
+            <tr><td>Módulo completado</td><td>100</td></tr>
+        </table>
+        <p>Hay <b>11 niveles</b>, de «Semilla de R» a «Gran Maestro useR», y <b>22 medallas</b> (primer programa, cazabugs, graficador, racha de 7 días, quiz perfecto…). En <b>Mis logros</b> se ven todas; al completar los 16 módulos se activa el <b>diploma</b> imprimible.</p>
+    </div>
+    <figure><img src="img/logros.png" alt="Mis logros"><figcaption>Figura 7. Mis logros: estadísticas, medallas y niveles.</figcaption></figure>
+</div>
+
+<h2 id="libre">7. Laboratorio libre y datos de práctica</h2>
+<p>El <b>Laboratorio libre</b> sirve para practicar sin un módulo: tiene experimentos listos (complemento de ADN, transcripción, IMC, curvas de crecimiento, modelo logístico, temperaturas, flores con ggplot2 y un juego de adivinar).</p>
+<figure><img src="img/libre.png" alt="Laboratorio libre"><figcaption>Figura 8. Laboratorio libre con el experimento «Flores con ggplot2».</figcaption></figure>
+<p><b>Datos de práctica</b> (en la barra lateral) describe las siete bases ya cargadas en el R de la academia y permite descargarlas para RStudio: <code>pacientes.csv</code>, <code>plantas.csv</code>, <code>crecimiento.csv</code>, <code>fertilizante.csv</code>, <code>genes.csv</code>, <code>clima.csv</code> y <code>estudiantes.csv</code>. Se leen con <code>read.csv("pacientes.csv")</code>.</p>
+<figure><img src="img/datos.png" alt="Datos de práctica"><figcaption>Figura 9. Datos de práctica.</figcaption></figure>
+
+<h2 id="videos">8. Aprendo con videos</h2>
+<p>Reúne <b>23 videos del canal de YouTube del profesor</b> John Jairo Estrada, verificados uno a uno, en siete temas: bioestadística con datos no agrupados y agrupados, diagrama de caja, de la unidad de observación al data frame, de Excel a CSV, Google Colab en equipo y modelos y simulaciones en biología. Cada tema tiene botones «Ver en la aplicación» que llevan a los módulos relacionados; esos videos también aparecen en la lección de esos módulos.</p>
+<figure><img src="img/videos.png" alt="Aprendo con videos"><figcaption>Figura 10. Aprendo con videos.</figcaption></figure>
+<div class="nota"><p>El canal aún no tiene videos de programación en R: los módulos sin videos del canal se listan al final de la sección. Sus lecciones usan videos en español de otros autores, verificados.</p></div>
+
+<h2 id="evaluaciones">9. Evaluaciones y recursos del curso</h2>
+<p><b>Evaluaciones</b> muestra las autoevaluaciones (quizzes) de cada módulo con tu mejor resultado, y los quizzes y parciales oficiales del profesor cuando los publique (cada uno con enlace y código QR para el celular).</p>
+<figure><img src="img/evaluaciones.png" alt="Evaluaciones"><figcaption>Figura 11. Evaluaciones.</figcaption></figure>
+<p><b>Recursos del curso</b>: este manual, la <b>chuleta de R</b> (las funciones más usadas en una página), los <b>atajos de RStudio</b>, los datos de práctica, <b>páginas recomendadas</b> (libros gratuitos en español, CRAN, Posit, Bioconductor, cheatsheets) y otras aplicaciones del profesor.</p>
+<figure><img src="img/recursos.png" alt="Recursos del curso"><figcaption>Figura 12. Recursos del curso.</figcaption></figure>
+
+<h2 id="buscador">10. Buscador y notas</h2>
+<div class="lado">
+    <div>
+        <p>Pulsa <b>Buscar</b> o <kbd>Ctrl</kbd> + <kbd>K</kbd> y escribe una palabra («boxplot», «data frame», «t.test»): aparecen módulos, retos, quizzes, recursos y videos. Muévete con las flechas y entra con <kbd>Enter</kbd>.</p>
+        <p>El botón de <b>notas</b> guarda apuntes por módulo; <b>Descargar todas</b> las baja en un archivo Markdown.</p>
+    </div>
+    <figure><img src="img/buscador.png" alt="Buscador"><figcaption>Figura 13. Buscador.</figcaption></figure>
+</div>
+
+<h2 id="errores">11. Guía rápida de errores de R</h2>
+<p>Cuando tu programa falla, la consola marca la línea y el <b>Profe R</b> explica el error en español.</p>
+<figure><img src="img/error.png" alt="Profe R"><figcaption>Figura 14. El Profe R explica un error de nombre (mayúsculas).</figcaption></figure>
+<table>
+    <tr><th>Mensaje de R</th><th>Qué significa</th><th>Cómo arreglarlo</th></tr>
+    <tr><td><code>object 'x' not found</code></td><td>El objeto no existe</td><td>Revisa mayúsculas y que se haya creado antes; los textos van entre comillas.</td></tr>
+    <tr><td><code>could not find function</code></td><td>Función desconocida</td><td>Revisa el nombre o carga el paquete con <code>library()</code>.</td></tr>
+    <tr><td><code>unexpected symbol</code> / <code>')'</code> / <code>end of input</code></td><td>Error de escritura</td><td>Falta o sobra una coma, paréntesis, llave o comilla.</td></tr>
+    <tr><td><code>non-numeric argument to binary operator</code></td><td>Texto donde iba un número</td><td>Convierte con <code>as.numeric()</code> (lo que da <code>readline()</code> es texto).</td></tr>
+    <tr><td><code>missing value where TRUE/FALSE needed</code></td><td>Condición con NA</td><td>Usa <code>is.na()</code> o <code>na.rm = TRUE</code>.</td></tr>
+    <tr><td><code>the condition has length &gt; 1</code></td><td><code>if</code> con un vector</td><td>Usa <code>ifelse()</code>, <code>any()</code> o <code>all()</code>.</td></tr>
+    <tr><td><code>undefined columns selected</code></td><td>Columna inexistente</td><td>Revisa <code>names(datos)</code>.</td></tr>
+    <tr><td><code>cannot open file</code></td><td>Archivo no encontrado</td><td>Revisa el nombre o súbelo con <b>Subir</b>.</td></tr>
+    <tr><td><code>there is no package called</code></td><td>Paquete no disponible en el navegador</td><td>Practícalo en RStudio o Colab.</td></tr>
+    <tr><td>«¿Bucle infinito?»</td><td>El programa tardó más de 12 s</td><td>Revisa la condición del <code>while</code>.</td></tr>
+</table>
+
+<h2 id="celular">12. La academia en el celular</h2>
+<div class="lado">
+    <div>
+        <p>La academia se adapta a pantallas pequeñas: el menú se abre con el botón ☰ de la esquina superior, los pasos del módulo se desplazan horizontalmente y el laboratorio muestra el editor encima de la consola.</p>
+        <p>Para escribir código largo es más cómodo un computador, pero las lecciones, los videos y los quizzes funcionan bien en el celular.</p>
+    </div>
+    <figure><img src="img/celular.png" alt="Celular"><figcaption>Figura 15. Un módulo en el celular.</figcaption></figure>
+</div>
+
+<h2 id="problemas">13. Solución de problemas</h2>
+<table>
+    <tr><th>Problema</th><th>Solución</th></tr>
+    <tr><td>«ID/C.C. o contraseña incorrectos»</td><td>Revisa mayúsculas y espacios. Si estás matriculado y no puedes entrar, pide al profesor que revise tu usuario.</td></tr>
+    <tr><td>El indicador dice «R sin conexión»</td><td>La primera carga de R necesita internet. Revisa la conexión y recarga la página.</td></tr>
+    <tr><td>La primera ejecución tarda</td><td>Es normal: R se descarga una vez por sesión (unos 10 s). Un paquete nuevo tarda unos segundos más.</td></tr>
+    <tr><td>El video se abre en YouTube en vez de verse en la academia</td><td>La academia está abierta como archivo del computador (<code>file://</code>): YouTube no permite videos incrustados así (Error 153). Ábrela desde su dirección de internet (GitHub Pages) y los videos se verán dentro.</td></tr>
+    <tr><td>Mi archivo subido desapareció</td><td>Los archivos subidos se borran al recargar la página. Vuelve a subirlos.</td></tr>
+    <tr><td>Un paquete no se instala</td><td>Algunos (Bioconductor, shiny en servidor) no funcionan en el navegador: usa RStudio, Posit Cloud o Colab.</td></tr>
+    <tr><td>El reto dice «¡Casi! Faltan resultados»</td><td>Abre «Ver la salida esperada» y compara: deben aparecer los mismos números junto a su etiqueta y el resultado final.</td></tr>
+    <tr><td>Perdí mi progreso</td><td>El progreso se guarda en el navegador de cada equipo. Usa siempre el mismo navegador y no borres los datos del sitio.</td></tr>
+    <tr><td>El manual no abre en ventana</td><td>Permite las ventanas emergentes o usa <b>Descargar PDF</b>.</td></tr>
+</table>
+
+<h2 id="profesor">14. Para el profesor</h2>
+<h3>Usuarios</h3>
+<ul>
+    <li>Entre con <b>admin / admin123</b> (cámbiela) para abrir el <b>Panel de administración</b>: crear, desactivar, eliminar usuarios y cambiar contraseñas.</li>
+    <li>Los usuarios creados en el panel solo existen en ese navegador. Para que un estudiante pueda entrar desde cualquier equipo, use <b>Exportar usuarios</b>, pegue el bloque en <code>_PRESET_USERS</code> de <code>js/auth.js</code> y publique el cambio (detalles en <code>_seguridadBasica.md</code>).</li>
+    <li>La academia usa claves de almacenamiento propias (<code>bior_…</code>, <code>br_…</code>): no se mezcla con la Academia Bio-Python aunque las dos estén en el mismo sitio de GitHub Pages.</li>
+</ul>
+<h3>Registro en Google Forms (opcional)</h3>
+<p>La academia puede enviar a formularios de Google el ingreso, la salida y la duración de cada sesión, y las actividades (lecciones, retos, notas de quizzes). Está <b>desactivado</b>: para activarlo ejecute <code>docs/crear_formularios.gs</code> en script.google.com y pegue la configuración que imprime en <code>js/registro-config.js</code>.</p>
+<h3>Contenido</h3>
+<ul>
+    <li>Cada unidad está en <code>js/modulos/unidadN.js</code>: lección (<code>content</code>), retos (<code>exercises</code>) y quiz (<code>quiz</code>). Los bloques <code>R`...`</code> reciben el botón ▶ Probar.</li>
+    <li>Las evaluaciones oficiales se agregan en <code>EVALUACIONES</code> de <code>js/recursos.js</code> (título, enlace, ícono y color; el código QR se genera solo).</li>
+    <li>Los videos del canal se agregan en <code>js/videos.js</code>.</li>
+</ul>
+
+</body>
+</html>
